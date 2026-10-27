@@ -1,0 +1,23 @@
+{
+  "name": "code-lyrics",
+  "displayName": "Code Lyrics",
+  "description": "Plain-English explanations that follow your code like synced lyrics.",
+  "version": "0.0.1",
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["Education", "Other"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "codeLyrics.open", "title": "Code Lyrics: Open Explanation Panel" }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.4.0"
+  }
+}
