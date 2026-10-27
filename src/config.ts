@@ -35,4 +35,11 @@ export async function promptSetApiKey(secrets: vscode.SecretStorage): Promise<vo
   if (key === undefined) return; // user cancelled
   await secrets.store(`codeLyrics.apiKey.${provider}`, key);
   vscode.window.showInformationMessage(`Code Lyrics: API key saved for "${provider}".`);
+}export async function setApiKey(secrets: vscode.SecretStorage, provider: Provider, key: string): Promise<void> {
+  await secrets.store(`codeLyrics.apiKey.${provider}`, key);
+}
+
+export async function updateConfigValue(key: string, value: any): Promise<void> {
+  const c = vscode.workspace.getConfiguration('codeLyrics');
+  await c.update(key, value, vscode.ConfigurationTarget.Global);
 }

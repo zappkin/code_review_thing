@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { chunkSpans, Chunk, Span } from './chunking';
 import { panelHtml } from './panel';
-import { getConfig, promptSetApiKey } from './config';
+import { getConfig, getApiKey, setApiKey, updateConfigValue, promptSetApiKey } from './config';
 import { clearConsent, shouldSkip } from './safety';
 import { Explainer, ChunkResult } from './explainer';
 import type { Mode } from './rules';
@@ -97,16 +97,59 @@ async function open(ctx: vscode.ExtensionContext): Promise<void> {
     statusBar.hide();
   }, null, ctx.subscriptions);
 
-  panel.webview.onDidReceiveMessage(msg => {
+  panel.webview.onDidReceiveMessage(async msg => {
     switch (msg.type) {
-      case 'ready':   refresh();       break;
-      case 'mode':    setMode(msg.mode as Mode); break;
-      case 'refresh': refresh();       break;
-      case 'reveal':  revealLine(msg.line as number); break;
+      case 'ready': {
+        await syncSettingsToPanel(ctx.secrets);
+        await refresh();
+        break;
+      }
+      case 'mode':
+        setMode(msg.mode as Mode);
+        break;
+      case 'refresh':
+        refresh();
+        break;
+      case 'reveal':
+        revealLine(msg.line as number);
+        break;
+      case 'setApiKey': {
+        try {
+          await setApiKey(ctx.secrets, msg.provider, msg.apiKey);
+          panel?.webview.postMessage({ type: 'keySaved', success: true });
+          updateStatusBar();
+          refresh();
+        } catch (err) {
+          panel?.webview.postMessage({ type: 'keySaved', success: false, error: String(err) });
+        }
+        break;
+      }
+      case 'updateConfig': {
+        await updateConfigValue(msg.key, msg.value);
+        updateStatusBar();
+        refresh();
+        break;
+      }
     }
   }, null, ctx.subscriptions);
 
   updateStatusBar();
+  syncSettingsToPanel(ctx.secrets);
+}
+
+async function syncSettingsToPanel(secrets: vscode.SecretStorage): Promise<void> {
+  if (!panel) return;
+  const cfg = getConfig();
+  const key = await getApiKey(secrets, cfg.provider);
+  panel.webview.postMessage({
+    type: 'initSettings',
+    config: {
+      provider: cfg.provider,
+      baseUrl: cfg.baseUrl,
+      model: cfg.model,
+      hasKey: !!key,
+    },
+  });
 }
 
 // ---------------------------------------------------------------------------
