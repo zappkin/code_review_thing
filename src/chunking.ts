@@ -1,6 +1,7 @@
 // Pure chunking logic (no vscode import) so it can be unit tested.
 
-export interface Span { start: number; end: number; name?: string }
+export interface Span  { start: number; end: number; name?: string }
+export interface Chunk extends Span { text: string }
 
 export const MAX_GAP_LINES = 10;
 

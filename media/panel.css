@@ -1,21 +1,73 @@
 :root { --accent: var(--vscode-focusBorder, #3794ff); }
-body { margin: 0; font-family: var(--vscode-font-family); color: var(--vscode-editor-foreground); background: var(--vscode-editor-background); }
-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 10px 20px; background: var(--vscode-editor-background); border-bottom: 1px solid var(--vscode-panel-border, transparent); }
+
+body {
+  margin: 0;
+  font-family: var(--vscode-font-family);
+  color: var(--vscode-editor-foreground);
+  background: var(--vscode-editor-background);
+}
+
+header {
+  position: sticky; top: 0; z-index: 1;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 20px;
+  background: var(--vscode-editor-background);
+  border-bottom: 1px solid var(--vscode-panel-border, transparent);
+}
+
 #file { font-size: 12px; opacity: .6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 .modes { display: flex; gap: 2px; padding: 2px; border-radius: 6px; background: var(--vscode-input-background); }
-.modes button { font: inherit; font-size: 12px; padding: 3px 10px; border: 0; border-radius: 4px; cursor: pointer;
-  color: var(--vscode-foreground); background: transparent; opacity: .65; }
-.modes button[aria-pressed="true"] { background: var(--vscode-button-background); color: var(--vscode-button-foreground); opacity: 1; }
+.modes button {
+  font: inherit; font-size: 12px; padding: 3px 10px;
+  border: 0; border-radius: 4px; cursor: pointer;
+  color: var(--vscode-foreground); background: transparent; opacity: .65;
+}
+.modes button[aria-pressed="true"] {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  opacity: 1;
+}
 .modes button:focus-visible { outline: 1px solid var(--accent); }
+
+#refresh-btn {
+  font: inherit; font-size: 14px; padding: 3px 8px;
+  border: 0; border-radius: 4px; cursor: pointer;
+  color: var(--vscode-foreground); background: transparent; opacity: .6;
+  transition: opacity .15s;
+}
+#refresh-btn:hover  { opacity: 1; }
+#refresh-btn:focus-visible { outline: 1px solid var(--accent); }
+
 #list { padding: 40vh 24px; max-width: 62ch; margin: 0 auto; }
-.row { --d: 4; padding: 10px 0 10px 14px; border-left: 2px solid transparent; cursor: pointer;
-  transform-origin: left center; transform: scale(.94);
+
+.row {
+  --d: 4;
+  padding: 10px 0 10px 14px;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  transform-origin: left center;
+  transform: scale(.94);
   opacity: max(.2, calc(1 - var(--d) * .26));
-  transition: opacity .35s ease, transform .35s ease, border-color .35s ease; }
+  transition: opacity .35s ease, transform .35s ease, border-color .35s ease;
+}
 .row.active { transform: scale(1); border-left-color: var(--accent); }
-.meta { font-size: 11px; opacity: .6; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
-.text { font-size: 17px; line-height: 1.5; }
+.row.stale  { opacity: max(.15, calc((1 - var(--d) * .26) * .5)); }
 .row:focus-visible { outline: 1px solid var(--accent); }
-#empty { opacity: .6; padding: 24px; }
+
+.meta  { font-size: 11px; opacity: .6; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
+.text  { font-size: 17px; line-height: 1.5; }
+.stale .text::after { content: ' ↺'; font-size: 12px; opacity: .5; }
+
+.error-msg {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--vscode-errorForeground, #f48771);
+}
+
+#notice {
+  padding: 24px;
+  opacity: .6;
+}
+
 @media (prefers-reduced-motion: reduce) { .row { transition: none; } }

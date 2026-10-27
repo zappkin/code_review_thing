@@ -2,22 +2,57 @@
   "name": "code-lyrics",
   "displayName": "Code Lyrics",
   "description": "Plain-English explanations that follow your code like synced lyrics.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": { "vscode": "^1.90.0" },
   "categories": ["Education", "Other"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
-      { "command": "codeLyrics.open", "title": "Code Lyrics: Open Explanation Panel" }
-    ]
+      { "command": "codeLyrics.open",         "title": "Code Lyrics: Open Explanation Panel" },
+      { "command": "codeLyrics.setApiKey",    "title": "Code Lyrics: Set API Key" },
+      { "command": "codeLyrics.clearConsent", "title": "Code Lyrics: Clear Provider Consent" },
+      { "command": "codeLyrics.refresh",      "title": "Code Lyrics: Refresh" }
+    ],
+    "configuration": {
+      "title": "Code Lyrics",
+      "properties": {
+        "codeLyrics.provider": {
+          "type": "string",
+          "enum": ["openai-compat", "anthropic"],
+          "default": "openai-compat",
+          "description": "LLM provider. 'openai-compat' works with OpenAI, Groq, Ollama, LM Studio, etc."
+        },
+        "codeLyrics.baseUrl": {
+          "type": "string",
+          "default": "http://localhost:11434/v1",
+          "description": "Base URL for OpenAI-compatible providers (ignored for Anthropic)."
+        },
+        "codeLyrics.model": {
+          "type": "string",
+          "default": "llama3",
+          "description": "Model name to use for explanations."
+        },
+        "codeLyrics.liveMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Refresh explanations automatically while typing (after ~1.5 s pause)."
+        },
+        "codeLyrics.refreshOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Refresh explanations whenever the file is saved."
+        }
+      }
+    }
   },
   "scripts": {
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "watch":   "tsc -watch -p ./",
+    "test":    "node --test out/test/chunking.test.js"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node":   "^20.0.0",
     "@types/vscode": "^1.90.0",
-    "typescript": "^5.4.0"
+    "typescript":    "^5.4.0"
   }
 }
